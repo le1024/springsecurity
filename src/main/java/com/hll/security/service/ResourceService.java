@@ -18,11 +18,11 @@ public class ResourceService {
     @Autowired
     private RoleRepository roleRepository;
 
-    public Resource findResouceByUrl(String url) {
+    public Resource findResourceByUrl(String url) {
         return resourceRepository.findByUrl(url);
     }
 
-    public List<Role> getRoles(String resouceId) {
-        return roleRepository.findRoleByResouceId(resouceId);
+    public List<Role> getRoles(String resourceId) {
+        return roleRepository.findRoleByResourceId(resourceId);
     }
 }

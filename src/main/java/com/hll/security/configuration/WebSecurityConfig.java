@@ -1,5 +1,6 @@
 package com.hll.security.configuration;
 
+import com.alibaba.fastjson.JSON;
 import com.hll.security.component.AccessDecisionManagerImpl;
 import com.hll.security.component.AccessDeniedHandlerImpl;
 import com.hll.security.component.FilterInvocationSecurityMetadataSourceImpl;
@@ -96,12 +97,13 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                    // @Override
                    // public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
                         response.setContentType("application/json;charset=utf-8");
+                        response.setCharacterEncoding("utf-8");
                         PrintWriter out = response.getWriter();
 
                         JsonResult result = new JsonResult();
                         result.setMessage("访问成功");
                         result.setFlag(true);
-                        out.write(result.toString());
+                        out.write(JSON.toJSONString(result));
                         out.flush();
                         out.close();
                    // }
@@ -110,6 +112,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                     //@Override
                     //public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response, AuthenticationException e) throws IOException, ServletException {
                         response.setContentType("application/json;chartset=utf-8");
+                        response.setCharacterEncoding("utf-8");
                         PrintWriter out = response.getWriter();
 
                         JsonResult result = new JsonResult();
@@ -124,7 +127,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                             result.setMessage("登陆失败");
                         }
 
-                        out.write(result.toString());
+                        out.write(JSON.toJSONString(result));
                         out.flush();
                         out.close();
                     //}

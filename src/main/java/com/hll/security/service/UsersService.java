@@ -28,18 +28,16 @@ public class UsersService implements UserDetailsService {
     private UsersRepository usersRepository;
     @Autowired
     private RoleRepository roleRepository;
-    @Autowired
-    private UserRoleRepository userRoleRepository;
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         logger.info("加载用户:" + username);
 
-        Users user = getByUsername(username).get(0);
+        Users user = getByUsername(username);
         if (user == null) {
             throw new UsernameNotFoundException("用户不存在");
         }
-        return new UserDetailsImpl(user, userRoleRepository.findByUser(user));
+        return new UserDetailsImpl(user, roleRepository.findRoleByUser(user));
     }
 
     @Transactional
@@ -48,7 +46,7 @@ public class UsersService implements UserDetailsService {
     }
 
     @Transactional
-    public List<Users> getByUsername(String username) {
+    public Users getByUsername(String username) {
         return usersRepository.findByUsername(username);
     }
 }

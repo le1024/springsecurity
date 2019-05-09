@@ -4,6 +4,8 @@ package com.hll.security.component;
 import com.hll.security.entity.Resource;
 import com.hll.security.entity.Role;
 import com.hll.security.service.ResourceService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.ConfigAttribute;
 import org.springframework.security.access.SecurityConfig;
@@ -23,6 +25,8 @@ import java.util.List;
 @Component
 public class FilterInvocationSecurityMetadataSourceImpl implements FilterInvocationSecurityMetadataSource {
 
+    protected static Logger logger = LoggerFactory.getLogger(FilterInvocationSecurityMetadataSourceImpl.class);
+
     @Autowired
     private ResourceService resourceService;
 
@@ -37,7 +41,7 @@ public class FilterInvocationSecurityMetadataSourceImpl implements FilterInvocat
             return null;
         }
 
-        Resource resource = resourceService.findResouceByUrl(url);
+        Resource resource = resourceService.findResourceByUrl(url);
         //没有匹配的url，说明都可以访问
         if (resource == null) {
             return SecurityConfig.createList("ROLE_LOGIN");
@@ -49,6 +53,7 @@ public class FilterInvocationSecurityMetadataSourceImpl implements FilterInvocat
         String[] values = new String[size];
         for (int i=0; i<size; i++) {
             values[i] = roles.get(i).getRoleName();
+            logger.info("请求路径:"+ resource.getUrl()+",权限要求:" + values[i]+":"+roles.get(i).getRoleDesc());
         }
 
         return SecurityConfig.createList(values);
