@@ -28,3 +28,6 @@ spring:
       content-type: text/html
     mode: LEGACYHTML5
 
+#logback日志配置
+logging:
+  config: classpath:logback-spring.xml
