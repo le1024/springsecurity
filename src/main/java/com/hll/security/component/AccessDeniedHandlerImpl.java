@@ -32,5 +32,8 @@ public class AccessDeniedHandlerImpl implements AccessDeniedHandler {
         out.write(JSON.toJSONString(result));
         out.flush();
         out.close();
+
+        //可以写一个403页面提示权限不足
+        //response.sendRedirect("403");
     }
 }

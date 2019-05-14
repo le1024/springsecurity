@@ -27,6 +27,7 @@ public class AccessDecisionManagerImpl implements AccessDecisionManager {
         while (iterator.hasNext()) {
             ConfigAttribute ca = iterator.next();
 
+            //ca.getAttribute获取访问的url需要的角色
             String needRole = ca.getAttribute();
             //首先判断用户是否登陆
             if ("ROLE_LOGIN".equals(needRole)) {
@@ -38,6 +39,8 @@ public class AccessDecisionManagerImpl implements AccessDecisionManager {
             }
 
             //遍历当前用户所具有的权限
+            //这里的权限list就是FilterInvocationSecurityMetadataSourceImpl类中封装的访问目标url所具有的权限角色
+            //只要当前访问的url的needRole在权限list中存在就允许访问
             Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
             for (GrantedAuthority authority : authorities) {
                 if (authority.getAuthority().equals(needRole)) {

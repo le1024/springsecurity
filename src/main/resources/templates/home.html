@@ -1,31 +1,35 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
 <head>
     <meta charset="UTF-8">
     <title>Home</title>
     <link rel="stylesheet" th:href="@{static/layui/css/layui.css}">
 </head>
 <body class="layui-layout-body">
+<!--<div sec:authorize="isAuthenticated()">
+    <p>登陆用户：<span sec:authentication="name"></span></p>
+    <p>登陆角色：<span sec:authentication="principal.authorities"></span></p>
+</div>-->
+
+
 <div class="layui-layout layui-layout-admin">
     <div class="layui-header">
-        <div class="layui-logo">layui 后台布局</div>
+        <div class="layui-logo">spring security学习</div>
         <!-- 头部区域（可配合layui已有的水平导航） -->
         <ul class="layui-nav layui-layout-left">
-            <li class="layui-nav-item"><a th:href="user_resource_4">用户管理</a></li>
-            <li class="layui-nav-item"><a th:href="admin_resource_3">管理员管理</a></li>
+            <th:block th:each="res : ${listOnes}">
+                <li class="layui-nav-item"><a th:href="${res.url}" th:text="${res.resourceName}"></a></li>
+            </th:block>
         </ul>
         <ul class="layui-nav layui-layout-right">
             <li class="layui-nav-item">
-                <a href="javascript:;">
-                    <img src="http://t.cn/RCzsdCq" class="layui-nav-img">
-                    贤心
+                <a href="javascript:alert('不要点我');">
+                    <img src="https://avatar.csdn.net/E/2/1/3_sinat_33151213.jpg" class="layui-nav-img">
+                        <span sec:authentication="name"></span>
                 </a>
-                <dl class="layui-nav-child">
-                    <dd><a href="">基本资料</a></dd>
-                    <dd><a href="">安全设置</a></dd>
-                </dl>
             </li>
-            <li class="layui-nav-item"><a href="">退了</a></li>
+            <li class="layui-nav-item"><a href="logout">退出</a></li>
         </ul>
     </div>
 
@@ -33,25 +37,11 @@
         <div class="layui-side-scroll">
             <!-- 左侧导航区域（可配合layui已有的垂直导航） -->
             <ul class="layui-nav layui-nav-tree"  lay-filter="test">
-                <li class="layui-nav-item layui-nav-itemed">
-                    <a class="" href="javascript:;">所有商品</a>
-                    <dl class="layui-nav-child">
-                        <dd><a href="javascript:;">列表一</a></dd>
-                        <dd><a href="javascript:;">列表二</a></dd>
-                        <dd><a href="javascript:;">列表三</a></dd>
-                        <dd><a href="">超链接</a></dd>
-                    </dl>
-                </li>
-                <li class="layui-nav-item">
-                    <a href="javascript:;">解决方案</a>
-                    <dl class="layui-nav-child">
-                        <dd><a href="javascript:;">列表一</a></dd>
-                        <dd><a href="javascript:;">列表二</a></dd>
-                        <dd><a href="">超链接</a></dd>
-                    </dl>
-                </li>
-                <li class="layui-nav-item"><a href="">云市场</a></li>
-                <li class="layui-nav-item"><a href="">发布商品</a></li>
+                <th:block th:each="res : ${listTwos}">
+                    <li class="layui-nav-item layui-nav-itemed">
+                        <a class="" th:href="${res.url}" th:text="${res.resourceName}"></a>
+                    </li>
+                </th:block>
             </ul>
         </div>
     </div>
@@ -66,5 +56,8 @@
         © layui.com - 底部固定区域
     </div>
 </div>
+<script>
+
+</script>
 </body>
 </html>

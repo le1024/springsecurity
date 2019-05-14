@@ -34,10 +34,11 @@ public class FilterInvocationSecurityMetadataSourceImpl implements FilterInvocat
     @Override
     public Collection<ConfigAttribute> getAttributes(Object o) throws IllegalArgumentException {
         String url = ((FilterInvocation) o).getRequestUrl();
+        url = url.substring(1, url.length());
         System.out.println("请求地址：" + url);
 
         //登陆页不需要权限
-        if ("/login".equals(url)) {
+        if ("login".equals(url)) {
             return null;
         }
 
@@ -47,13 +48,14 @@ public class FilterInvocationSecurityMetadataSourceImpl implements FilterInvocat
             return SecurityConfig.createList("ROLE_LOGIN");
         }
 
-        //将resource所需要的roles按照框架的要求封装返回
+        //将可以访问目标url的角色按照框架的要求封装返回
+        //AccessDecisionManagerImpl类中会遍历这里存储的权限
         List<Role> roles = resourceService.getRoles(resource.getId());
         int size = roles.size();
         String[] values = new String[size];
         for (int i=0; i<size; i++) {
             values[i] = roles.get(i).getRoleName();
-            logger.info("请求路径:"+ resource.getUrl()+",权限要求:" + values[i]+":"+roles.get(i).getRoleDesc());
+            logger.info("请求路径:"+ resource.getUrl()+",权限要求:" + roles.get(i).getRoleName()+":"+roles.get(i).getRoleDesc());
         }
 
         return SecurityConfig.createList(values);
