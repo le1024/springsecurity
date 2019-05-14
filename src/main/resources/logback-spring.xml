@@ -4,7 +4,7 @@
     <!-- ConsoleAppender把日志输出到控制台 -->
     <!--    <property name="CONSOLE_LOG_PATTERN" -->
     <!--               value="%date{yyyy-MM-dd HH:mm:ss} | %highlight(%-5level) | %boldYellow(%thread) | %boldGreen(%logger) | %msg%n"/> -->
-    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+    <appender name="consolelog" class="ch.qos.logback.core.ConsoleAppender">
         <encoder>
             <!--<pattern>${CONSOLE_LOG_PATTERN}</pattern> -->
             <pattern>%date{yyyy-MM-dd HH:mm:ss} %highlight(%-5level) (%file:%line\)- %m%n</pattern>
@@ -28,7 +28,7 @@
             <maxHistory>30</maxHistory>
             <timeBasedFileNamingAndTriggeringPolicy  class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
                 <!-- maxFileSize:这是活动文件的大小，默认值是10MB,本篇设置为1KB，只是为了演示 -->
-                <maxFileSize>1KB</maxFileSize>
+                <maxFileSize>10MB</maxFileSize>
             </timeBasedFileNamingAndTriggeringPolicy>
         </rollingPolicy>
         <encoder>
@@ -40,14 +40,28 @@
             <charset>UTF-8</charset> <!-- 此处设置字符集 -->
         </encoder>
     </appender>
+
+    <!--输出sql到控制台和日志文件-->
+    <logger name="org.hibernate.SQL" additivity="false">
+        <level value="DEBUG" />
+        <appender-ref ref="syslog" />
+        <appender-ref ref="consolelog" />
+    </logger>
+    <!--输出sql的参数到控制台和日志文件-->
+    <logger name="org.hibernate.type.descriptor.sql.BasicBinder" additivity="false" level="TRACE" >
+        <level value="TRACE" />
+        <appender-ref ref="syslog" />
+        <appender-ref ref="consolelog" />
+    </logger>
+
     <!-- 控制台日志输出级别 -->
     <root level="info">
-        <appender-ref ref="STDOUT" />
+        <appender-ref ref="consolelog" />
     </root>
     <!-- 指定项目中某个包，当有日志操作行为时的日志记录级别 -->
-    <!-- com.appley为根包，也就是只要是发生在这个根包下面的所有日志操作行为的权限都是DEBUG -->
+    <!-- com.hll.security为根包，也就是只要是发生在这个根包下面的所有日志操作行为的权限都是DEBUG -->
     <!-- 级别依次为【从高到低】：FATAL > ERROR > WARN > INFO > DEBUG > TRACE  -->
-    <logger name="com.hll.security" level="DEBUG">
+    <logger name="com.hll.security" level="FATAL">
         <appender-ref ref="syslog" />
     </logger>
 </configuration>
