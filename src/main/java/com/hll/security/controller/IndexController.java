@@ -3,6 +3,7 @@ package com.hll.security.controller;
 import com.hll.security.config.UserDetailsImpl;
 import com.hll.security.entity.Resource;
 import com.hll.security.repository.ResourceRepository;
+import com.hll.security.utils.JsonResult;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.SecurityConfig;
 import org.springframework.security.core.GrantedAuthority;
@@ -11,6 +12,8 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -62,5 +65,18 @@ public class IndexController {
         model.addAttribute("listOnes", listOnes);
         model.addAttribute("listTwos", listTwos);
         return "home";
+    }
+
+    @PostMapping("loadLeftMenu")
+    @ResponseBody
+    public JsonResult loadLeftMenu(String id, Model model) {
+        List<Resource> resources = resourceRepository.findByParentId(id);
+
+        JsonResult result = new JsonResult();
+        result.setFlag(true);
+        result.setMessage("加载左侧菜单成功");
+        result.setData(resources);
+
+        return result;
     }
 }

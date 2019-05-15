@@ -19,7 +19,7 @@
         <!-- 头部区域（可配合layui已有的水平导航） -->
         <ul class="layui-nav layui-layout-left">
             <th:block th:each="res : ${listOnes}">
-                <li class="layui-nav-item"><a th:href="${res.url}" th:text="${res.resourceName}"></a></li>
+                <li class="layui-nav-item"><a th:href="'javascript:loadLeftMenu(\''+${res.id}+'\');'" th:text="${res.resourceName}"></a></li>
             </th:block>
         </ul>
         <ul class="layui-nav layui-layout-right">
@@ -36,10 +36,10 @@
     <div class="layui-side layui-bg-black">
         <div class="layui-side-scroll">
             <!-- 左侧导航区域（可配合layui已有的垂直导航） -->
-            <ul class="layui-nav layui-nav-tree"  lay-filter="test">
+            <ul id="leftMenu" class="layui-nav layui-nav-tree"  lay-filter="test">
                 <th:block th:each="res : ${listTwos}">
                     <li class="layui-nav-item layui-nav-itemed">
-                        <a class="" th:href="${res.url}" th:text="${res.resourceName}"></a>
+                        <a class="" th:href="'javascript:openUrl(\''+${res.url}+'\', \''+${res.resourceName}+'\');'" th:text="${res.resourceName}"></a>
                     </li>
                 </th:block>
             </ul>
@@ -48,7 +48,7 @@
 
     <div class="layui-body">
         <!-- 内容主体区域 -->
-        <div style="padding: 15px;">内容主体区域</div>
+        <div style="padding: 15px;" id="content">spring security</div>
     </div>
 
     <div class="layui-footer">
@@ -56,8 +56,45 @@
         © layui.com - 底部固定区域
     </div>
 </div>
+<script src="http://libs.baidu.com/jquery/1.11.3/jquery.min.js"></script>
 <script>
+//加载左侧菜单栏
+function loadLeftMenu(id) {
+    $("#content").html("spring security");
+    $.post("loadLeftMenu", {id: id}, function(data) {
+       console.log(data);
+       let menu = "";
+       $.each(data.data, function(i, value) {
+           console.log(value);
+           menu += '<li class="layui-nav-item layui-nav-itemed">';
+           menu += '<a class="" href="javascript:openUrl(\''+value.url+'\', \''+value.resourceName+'\');">'+value.resourceName+'</a>';
+           menu += '</li>'
+       });
+       console.log(menu);
+       $("#leftMenu").html(menu);
+    });
+}
 
+//加载主体区域
+function openUrl(url, name) {
+    //$("#content").html(name);
+    $.ajax({
+        type: 'post',
+        url: url,
+        success: function(data) {
+            console.log(data);
+        },
+        error: function (data) {
+            //console.log(data);
+            if (data.status == 404) {
+                $("#content").html("该功能页面正在紧急开发中...");
+            } else {
+                $("#content").html(data.responseJSON.message);
+            }
+
+        }
+    });
+}
 </script>
 </body>
 </html>
