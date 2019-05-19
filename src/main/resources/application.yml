@@ -28,6 +28,26 @@ spring:
       content-type: text/html
     mode: LEGACYHTML5
 
+  #redis
+  redis:
+    #数据库索引
+    database: 0
+    host: 118.25.153.58
+    port: 6379
+    password: echoredis
+    jedis:
+      pool:
+        #最大连接数
+        max-active: 8
+        #阻塞等待时间,负数表示没限制
+        max-wait: -1
+        #最大空闲
+        max-idle: 8
+        #最小空闲
+        min-idle: 0
+    #连接超时时间
+    timeout: 10000
+
 #logback日志配置
 logging:
   config: classpath:logback-spring.xml

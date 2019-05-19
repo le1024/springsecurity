@@ -5,6 +5,7 @@ import com.hll.security.entity.Resource;
 import com.hll.security.repository.ResourceRepository;
 import com.hll.security.utils.JsonResult;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.access.SecurityConfig;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -28,6 +29,8 @@ import java.util.List;
 public class IndexController {
     @Autowired
     private ResourceRepository resourceRepository;
+    @Autowired
+    private RedisTemplate redisTemplate;
 
     @GetMapping("/login")
     public String login() {
@@ -48,19 +51,39 @@ public class IndexController {
         List<Resource> listOnes = new ArrayList<>();
         //二级菜单
         List<Resource> listTwos = new ArrayList<>();
+
         if(it.hasNext()) {
-            //System.out.println(it.next());
-            List<Resource> resources = resourceRepository.getResourceByRoleName(it.next().toString());
-            for (Resource r : resources) {
-                if (r.getLevel() == 1) {
-                    listOnes.add(r);
+            String roleName = it.next().toString();
+            if (redisTemplate.hasKey(roleName + "_menu_one")) {
+                System.out.println("从redis获取菜单1");
+                listOnes =(List<Resource>) redisTemplate.opsForValue().get(roleName+"_menu_one");
+            } else {
+                //System.out.println(it.next());
+                List<Resource> resources = resourceRepository.getResourceByRoleName(roleName);
+                for (Resource r : resources) {
+                    if (r.getLevel() == 1) {
+                        listOnes.add(r);
+                    }
                 }
+                System.out.println("从数据库获取菜单1");
+                //要改用opsForList的方式存储，不然redis里面存的数据看不懂
+                redisTemplate.opsForValue().set(roleName+"_menu_one", listOnes);
             }
 
-            List<Resource> res = resourceRepository.findByParentId(listOnes.get(0).getId());
-            //List<Resource> res = resourceRepository.findAll();
-            listTwos.addAll(res);
+            if (redisTemplate.hasKey(roleName + "_menu_two")) {
+                System.out.println("从redis获取菜单2");
+                listTwos = (List<Resource>) redisTemplate.opsForValue().get(roleName + "_menu_two");
+            } else {
+                List<Resource> res = resourceRepository.findByParentId(listOnes.get(0).getId());
+                //List<Resource> res = resourceRepository.findAll();
+                listTwos.addAll(res);
+
+                redisTemplate.opsForValue().set(roleName+"_menu_two", listTwos);
+                System.out.println("从数据库获取菜单2");
+            }
         }
+
+
 
         model.addAttribute("listOnes", listOnes);
         model.addAttribute("listTwos", listTwos);
