@@ -1,4 +1,4 @@
-package com.hll.security.config;
+package com.hll.security.configuration;
 
 import org.springframework.cache.annotation.CachingConfigurerSupport;
 import org.springframework.cache.annotation.EnableCaching;

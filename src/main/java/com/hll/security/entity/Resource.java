@@ -3,10 +3,11 @@ package com.hll.security.entity;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.Objects;
 
 @Entity
-public class Resource {
+public class Resource implements Serializable {
     private String id;
     private String url;
     private String resourceName;
